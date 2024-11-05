@@ -1,12 +1,14 @@
+import pickle
 from collections import UserDict
+from datetime import datetime, timedelta
 
 # Base class Field
 class Field:
     def __init__(self, value):
-        pass
+        self.value = value
 
     def __str__(self):
-        pass
+        return str(self.value)
 
 
 # Class Note for support: tags, search, and editing
@@ -62,18 +64,31 @@ class Address(Field):
 # Decorator for error handling
 def input_error(func):
     def inner(*args, **kwargs):
-        pass
+        try:
+            return func(*args, **kwargs)
+        except KeyError:
+            return "This contact does not exist"
+        except ValueError as err:
+            return err.args[0]
+        except IndexError:
+            return "Enter the argument for the command"
     return inner
 
 
 # Function for store data to file
 def save_data(book, filename="addressbook.pkl"):
-    pass
+    with open(filename, "wb") as f:
+        pickle.dump(book, f)
 
 
 # Function for restore data from the file
 def load_data(filename="addressbook.pkl"):
-    pass
+    try:
+        with open(filename, "rb") as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        # Return a new address book if the file is not found
+        return AddressBook()
 
 
 # Function for store Notebook to file
@@ -89,13 +104,17 @@ def load_notebook(filename="notebook.pkl"):
 # Class for storing and validation birthday
 class Birthday(Field):
     def __init__(self, value):
-        pass
+        super().__init__(value)
+        self.validate()
 
     def validate(self):
-        pass
+        try:
+            self.value = datetime.strptime(self.value, "%d.%m.%Y").date()
+        except ValueError:
+            raise ValueError("Invalid date format. Use DD.MM.YYYY")
 
     def __str__(self):
-        pass
+        return self.value.strftime("%d.%m.%Y")
 
 
 # Class to store name
@@ -106,94 +125,161 @@ class Name(Field):
 # Class for storing and validation phone number
 class Phone(Field):
     def __init__(self, value):
-        pass
+        super().__init__(value)
+        self.validate()
 
     def validate(self):
-        pass
+        if not self.value.isdigit() or len(self.value) != 10:
+            raise ValueError("Phone number must contain exactly 10 digits.")
 
 
 # Class for storing records
 class Record:
     def __init__(self, name):
-        pass
-
-    def add_email(self, email):
-        pass
-
-    def add_address(self, address):
-        pass
+        self.name = Name(name)
+        self.phones = []
+        self.birthday = None
 
     def add_phone(self, phone_number):
-        pass
+        phone = Phone(phone_number)
+        self.phones.append(phone)
 
     def remove_phone(self, phone_number):
-        pass
+        phone_to_remove = self.find_phone(phone_number)
+        if phone_to_remove:
+            self.phones.remove(phone_to_remove)
 
     def edit_phone(self, old_phone_number, new_phone_number):
-        pass
+        phone_to_edit = self.find_phone(old_phone_number)
+        if phone_to_edit:
+            self.phones.remove(phone_to_edit)
+            self.add_phone(new_phone_number)
 
     def find_phone(self, phone_number):
-        pass
+        for phone in self.phones:
+            if phone.value == phone_number:
+                return phone
+        return None
 
     def add_birthday(self, birthday):
-        pass
+        self.birthday = Birthday(birthday)
 
     def __str__(self):
-        pass
+        phones_str = ', '.join(p.value for p in self.phones)
+        birthday_str = f", birthday: {self.birthday}" if self.birthday else ""
+        return f"Contact name: {self.name.value}, phones: {phones_str}{birthday_str}"
 
 
 # Class for work with address book
 class AddressBook(UserDict):
     def add_record(self, record):
-        pass
+        self.data[record.name.value] = record
 
     def find(self, name):
-        pass
+        return self.data.get(name)
 
     def delete(self, name):
-        pass
+        if name in self.data:
+            del self.data[name]
 
     def get_upcoming_birthdays(self):
-        pass
+        today = datetime.now().date()
+        upcoming_week = today + timedelta(days=7)
+        result = []
 
-    def get_birthdays_in_days(self, days):
-        pass
+        for record in self.data.values():
+            if record.birthday:
+                birthday = record.birthday.value
+                birthday_this_year = birthday.replace(year=today.year)
+
+                # If the birthday already passed this year, check next year
+                if birthday_this_year < today:
+                    birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+
+                # Check if birthday is within the next 7 days
+                if today <= birthday_this_year <= upcoming_week:
+                    # If birthday falls on a weekend, postpone to next Monday
+                    if birthday_this_year.weekday() >= 5:  # 5 is Saturday, 6 is Sunday
+                        birthday_this_year += timedelta(days=(7 - birthday_this_year.weekday()))
+
+                    result.append({
+                        'name': record.name.value,
+                        'birthday': birthday_this_year.strftime("%d.%m.%Y")
+                    })
+
+        return result
 
 
 # CLI Functions
 @input_error
 def parse_input(user_input):
-    pass
+    cmd, *args = user_input.split()
+    cmd = cmd.strip().lower()
+    return cmd, args
 
 
 @input_error
 def add_contact(args, address_book: AddressBook):
-    pass
+    name, phone, *_ = args
+    record = address_book.find(name)
+    message = "Contact updated."
+
+    if record is None:
+        record = Record(name)
+        address_book.add_record(record)
+        message = "Contact added."
+
+    if phone:
+        record.add_phone(phone)
+
+    return message
 
 
 @input_error
 def change_contact(args, address_book: AddressBook):
-    pass
+    name, phone = args
+    record = address_book.find(name)
+    if record:
+        record.edit_phone(record.phones[0].value, phone)
+        return f"Contact '{name}' updated."
+    raise KeyError
 
 
 @input_error
 def show_phone(args, address_book: AddressBook):
-    pass
+    name = args[0]
+    record = address_book.find(name)
+    if record:
+        return f"Phone for '{name}': {', '.join([p.value for p in record.phones])}"
+    raise KeyError
 
 
 @input_error
 def add_birthday(args, address_book: AddressBook):
-    pass
+    name, birthday = args
+    record = address_book.find(name)
+    if record:
+        record.add_birthday(birthday)
+        return f"Birthday for '{name}' added/updated."
+    raise KeyError
 
 
 @input_error
 def show_birthday(args, address_book: AddressBook):
-    pass
+    name = args[0]
+    record = address_book.find(name)
+    if record and record.birthday:
+        return f"Birthday for '{name}': {record.birthday}"
+    raise KeyError
 
 
 @input_error
 def birthdays(address_book: AddressBook):
-    pass
+    upcoming_birthdays = address_book.get_upcoming_birthdays()
+    if upcoming_birthdays:
+        result = "\n".join([f"{contact['name']} - {contact['birthday']}" for contact in upcoming_birthdays])
+        return f"Upcoming birthdays:\n{result}"
+    return "No upcoming birthdays in the next 7 days."
 
 
 @input_error
@@ -225,7 +311,10 @@ def delete_note(args, notebook: Notebook):
 
 @input_error
 def show_all(address_book: AddressBook):
-    pass
+    if address_book:
+        result = "\n".join([f"{name}: {', '.join([p.value for p in record.phones])}" for name, record in address_book.items()])
+        return f"All contacts:\n{result}"
+    return "No contacts found"
 
 
 def suggest_command(user_input):
@@ -238,8 +327,7 @@ def main():
 
     # Load existing Notebook data if available
     notebook = load_notebook()
-    # notebook = Notebook()
-
+    
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
@@ -247,7 +335,7 @@ def main():
 
         if command in ["close", "exit"]:
             # Save data before exiting
-            pass
+            save_data(address_book)
             print("Good bye!")
             break
         elif command == "hello":
