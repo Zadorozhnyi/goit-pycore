@@ -1,6 +1,9 @@
 import pickle
 from collections import UserDict
 from datetime import datetime, timedelta
+import difflib
+from prompt_toolkit import PromptSession
+from prompt_toolkit.completion import Completer, Completion
 
 # Base class Field
 class Field:
@@ -317,8 +320,26 @@ def show_all(address_book: AddressBook):
     return "No contacts found"
 
 
+# List of commands
+COMMANDS = [
+    "close", "exit", "hello", "add", "change", "phone", "all",
+    "add-birthday", "show-birthday", "birthdays", "birthdays-in-days",
+    "add-note", "find-note", "edit-note", "delete-note"
+]
+
+# Suggests the closest matching command.
 def suggest_command(user_input):
-    pass
+    closest_match = difflib.get_close_matches(user_input, COMMANDS, n=1)
+    return f"Did you mean: '{closest_match[0]}'?"  if closest_match else ""
+
+
+# Completer for prompt_toolkit that matches commands.
+class CommandCompleter(Completer):
+    def get_completions(self, document, complete_event):
+        text = document.text.lower()
+        matches = [cmd for cmd in COMMANDS if cmd.startswith(text)]
+        for match in matches:
+            yield Completion(match, start_position=-len(text))
 
 
 def main():
@@ -327,11 +348,17 @@ def main():
 
     # Load existing Notebook data if available
     notebook = load_notebook()
+
+    session = PromptSession(completer=CommandCompleter(), multiline=False)
     
     print("Welcome to the assistant bot!")
     while True:
-        user_input = input("Enter a command: ")
-        command, args = parse_input(user_input)
+
+        try:
+            user_input = session.prompt("Enter a command: ").strip()
+            command, args = parse_input(user_input)
+        except (EOFError, KeyboardInterrupt):
+            command = "close"
 
         if command in ["close", "exit"]:
             # Save data before exiting
