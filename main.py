@@ -432,7 +432,7 @@ def main():
             print(change_contact(args, address_book))
         elif command == "phone":
             print(show_phone(args, address_book))
-        elif command == "all":
+        elif command == "all-contacts":
             print(show_all_contacts(address_book))
         elif command == "add-birthday":
             print(add_birthday(args, address_book))
