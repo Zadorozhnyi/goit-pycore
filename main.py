@@ -1,4 +1,5 @@
 import pickle
+import re
 from collections import UserDict
 from datetime import datetime, timedelta
 
@@ -50,10 +51,12 @@ class Notebook:
 # Class for store and validate e-mail
 class Email(Field):
     def __init__(self, value):
-        pass
+        self.validate(value)
+        super().__init__(value)
 
-    def validate(self):
-        pass
+    def validate(self, value):
+        if not re.fullmatch(r'^[a-zA-Z0-9._%+-]{1,64}@[a-zA-Z0-9.-]{1,63}\.[a-zA-Z]{2,10}$', value):
+            raise ValueError("Invalid email format.")
 
 
 # Class for store addresses
@@ -104,14 +107,14 @@ def load_notebook(filename="notebook.pkl"):
 # Class for storing and validation birthday
 class Birthday(Field):
     def __init__(self, value):
-        super().__init__(value)
-        self.validate()
+        self.validate(value)
+        super().__init__(self.value)
 
-    def validate(self):
+    def validate(self, value):
         try:
-            self.value = datetime.strptime(self.value, "%d.%m.%Y").date()
+            self.value = datetime.strptime(value, "%d.%m.%Y").date()
         except ValueError:
-            raise ValueError("Invalid date format. Use DD.MM.YYYY")
+            raise ValueError("Invalid date format. Use 'DD.MM.YYYY'.")
 
     def __str__(self):
         return self.value.strftime("%d.%m.%Y")
@@ -125,12 +128,13 @@ class Name(Field):
 # Class for storing and validation phone number
 class Phone(Field):
     def __init__(self, value):
-        super().__init__(value)
-        self.validate()
-
-    def validate(self):
-        if not self.value.isdigit() or len(self.value) != 10:
+        if self.validate(value):
+            super().__init__(value)
+        else:
             raise ValueError("Phone number must contain exactly 10 digits.")
+
+    def validate(self, value):
+        return value.isdigit() and len(value) == 10
 
 
 # Class for storing records
@@ -139,6 +143,8 @@ class Record:
         self.name = Name(name)
         self.phones = []
         self.birthday = None
+        self.address = None
+        self.email = None
 
     # Add phone to the record by taking phone, if phone is already exist return
     def add_phone(self, phone_number:str):
@@ -171,10 +177,18 @@ class Record:
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
 
+    def add_adress(self, new_address):
+        self.address = Address(new_address)
+
+    def add_email(self, new_email):
+        self.email = Email(new_email)
+
     def __str__(self):
-        phones_str = ', '.join(p.value for p in self.phones)
-        birthday_str = f", birthday: {self.birthday}" if self.birthday else ""
-        return f"Contact name: {self.name.value}, phones: {phones_str}{birthday_str}"
+        phones_str = '\n  phones: ' + ', '.join(p.value for p in self.phones) if self.phones else ''
+        birthday_str = f"\n  birthday: {self.birthday}" if self.birthday else ""
+        address_str = f"\n  address: {self.address}" if self.address else ""
+        email_str = f"\n  email: {self.email}" if self.email else ""
+        return f"Contact name: {self.name.value}{phones_str}{address_str}{email_str}{birthday_str}"
 
 
 # Class for work with address book
@@ -228,8 +242,11 @@ def parse_input(user_input: str):
 
 
 @input_error
-def add_contact(args, address_book: AddressBook):
-    name, phone, *_ = args
+def add_contact(address_book: AddressBook):
+    name = input('Enter name: ').strip()
+    if not name:
+        raise ValueError("Name cannot be empty. Please try again.")
+
     record = address_book.find(name)
     message = "Contact updated."
 
@@ -238,8 +255,27 @@ def add_contact(args, address_book: AddressBook):
         address_book.add_record(record)
         message = "Contact added."
 
-    if phone:
-        record.add_phone(phone)
+    try:
+        phone = input('Enter phone: ').strip()
+        if phone:
+            record.add_phone(phone)
+
+        address = input('Enter address: ').strip()
+        if address:
+            record.add_adress(address)
+
+        email = input('Enter email: ').strip()
+        if email:
+            record.add_email(email)
+
+        birthday = input('Enter birthday (DD.MM.YYYY): ').strip()
+        if birthday:
+            record.add_birthday(birthday)
+
+    except ValueError as e:
+        if message == "Contact added.":
+            address_book.delete(name)
+        return f"{e} Please try again."
 
     return message
 
@@ -385,7 +421,7 @@ def main():
         elif command == "hello":
             print("How can I help you?")
         elif command == "add":
-            print(add_contact(args, address_book))
+            print(add_contact(address_book))
         elif command == "change":
             print(change_contact(args, address_book))
         elif command == "delete-phone":
