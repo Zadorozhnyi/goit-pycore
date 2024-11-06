@@ -184,7 +184,7 @@ class Record:
         self.email = Email(new_email)
 
     def __str__(self):
-        phones_str = '\n  phones: ' + ', '.join(p.value for p in self.phones) if self.phones else ''
+        phones_str = '\n  phones: ' + ', '.join(p for p in self.phones) if self.phones else ''
         birthday_str = f"\n  birthday: {self.birthday}" if self.birthday else ""
         address_str = f"\n  address: {self.address}" if self.address else ""
         email_str = f"\n  email: {self.email}" if self.email else ""
