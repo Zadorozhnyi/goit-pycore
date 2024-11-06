@@ -13,7 +13,7 @@ class Field:
 
 # Class Note for support: tags, search, and editing
 class Note:
-    def __init__(self, title: str, content: str, tags=None):
+    def __init__(self, title: str, content: str, tags=[]):
         self.title = title
         self.content = content
         self.tags = tags
@@ -27,7 +27,7 @@ class Note:
         self.content = new_content
 
     def __str__(self):
-        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {", ".join(self.tags if self.tags else "No tags for now(")}\n'
+        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {", ".join(self.tags)}\n'
 
 
 # Class Notebook for storing and managing notes
@@ -44,7 +44,11 @@ class Notebook(UserDict):
         return None
 
     def find_by_tag(self, tag):
-        pass
+        notes = f'{'\n'.join([str(note) for note in self.data.values() if tag in note.tags])}'
+        if notes == "":
+            return "No notes with this tag found"
+        else:
+            return notes
 
     # Function that delete note in dict by taking title
     def delete_note(self, title: str):
@@ -309,12 +313,12 @@ def add_note(notebook: Notebook):
     content = input("Please enter content of note >>> ").strip()
     add_tag = input("Do you wanna add tags? (yes/no) >>> ").strip().lower()
     if (add_tag == "yes"):
-        tags = input("Please enter tags for note >>> ").strip()
+        tags = input("Please enter tags for note >>> ").strip().split()
     
     note = notebook.find_by_title(title)
 
     if note is None:
-        note = Note(title, content)
+        note = Note(title, content, tags)
         notebook.add_note(note)
         return "Note added."
     else:
@@ -339,9 +343,15 @@ def add_tags_to_note(notebook: Notebook):
         raise ValueError("Note with this title is not exist")
 
 
+# Function to find notes by tag
 @input_error
 def find_note_by_tag(args: list[str], notebook: Notebook):
-    pass
+    try:
+        tag, *_ = args
+    except ValueError:
+        return "Please enter tag by which you want to find notes"
+    
+    return notebook.find_by_tag(tag)
 
 
 # Function for editing notes
