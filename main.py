@@ -18,14 +18,15 @@ class Note:
         self.content = content
         self.tags = tags
 
-    def add_tag(self, tag):
+    def add_tag(self, tags):
         pass
 
+    # Edit note from the notebook by taking new content,
     def update_content(self, new_content):
-        pass
+        self.content = new_content
 
     def __str__(self):
-        pass
+        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {self.tags if self.tags else "No tags for now("}\n'
 
 
 # Class Notebook for storing and managing notes
@@ -36,7 +37,7 @@ class Notebook(UserDict):
         self.data[str(note.title)] = note
     
      # Find note in dict by taking title
-    def find_by_title(self, title:str):
+    def find_by_title(self, title: str):
         if title in self.data:
             return self.data[title]
         return None
@@ -44,14 +45,15 @@ class Notebook(UserDict):
     def find_by_tag(self, tag):
         pass
 
-    def edit_note_content(self, note_index, new_content):
-        pass
-
-    def delete_note_by_index(self, note_index):
-        pass
+    # Function that delete note in dict by taking title
+    def delete_note(self, title: str):
+        if title in self.data:
+            del self.data[title]
+            return
+        return 'No notes with this title'
 
     def __str__(self):
-        pass
+        return f'{'\n'.join([str(note) for note in self.data.values()])}'
 
 
 # Class for store and validate e-mail
@@ -302,7 +304,7 @@ def birthdays_in_days(args, address_book: AddressBook):
 @input_error
 def add_note(notebook: Notebook):
     # Function add note with data in args (title, note) to the dict notebook
-    title = input("Please enter title of note >>> ").strip()
+    title = input("Please enter title of note >>> ").strip().lower()
     content = input("Please enter content of note >>> ").strip()
     add_tag = input("Do you wanna add tags? (yes/no) >>> ").strip().lower()
     if (add_tag == "yes"):
@@ -325,14 +327,43 @@ def find_note_by_tag(args, notebook: Notebook):
 
 # Function for editing notes
 @input_error
-def edit_note(args, notebook: Notebook):
-    pass
+def edit_note(notebook: Notebook):
+    title = input("Please enter title of note >>> ").strip().lower()
+    content = input("Please enter new content of note >>> ").strip()
+    
+    note: Note = notebook.find_by_title(title)
+
+    if note is not None:
+        note.update_content(content)
+        return "Note content updated."
+    else:
+        raise ValueError("Note with this title is not exist")
 
 
 # Function for deleting notes
 @input_error
-def delete_note(args, notebook: Notebook):
-    pass
+def delete_note(args: list[str], notebook: Notebook):
+    try:
+        title, *_ = args
+    except ValueError:
+        return "Please enter title of note that you want to delete"
+    
+    note: Note = notebook.find_by_title(title)
+
+    if note is not None:
+        notebook.delete_note(title)
+        return "Note deleted."
+    else:
+        raise ValueError("Note with this title is not exist")
+
+
+# Function takes dict of notes and return it, if no notes return 'No notes found'
+@input_error
+def show_all_notes(notebook: Notebook) -> str:
+    if len(notebook) == 0:
+        return 'No notes found'
+    
+    return notebook   
 
 
 @input_error
@@ -361,6 +392,7 @@ def main():
         if command in ["close", "exit"]:
             # Save data before exiting
             save_data(address_book)
+            save_notebook(notebook)
             print("Good bye!")
             break
         elif command == "hello":
@@ -386,9 +418,11 @@ def main():
         elif command == "find-note":
             print(find_note_by_tag(args, notebook))
         elif command == "edit-note":
-            print(edit_note(args, notebook))
+            print(edit_note(notebook))
         elif command == "delete-note":
             print(delete_note(args, notebook))
+        elif command == "all-notes":
+            print(show_all_notes(notebook))
         else:
             print(suggest_command(command))
 
