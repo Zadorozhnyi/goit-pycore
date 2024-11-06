@@ -45,7 +45,7 @@ class Notebook(UserDict):
         return None
 
     def find_by_tag(self, tag):
-        notes = f'{'\n'.join([str(note) for note in self.data.values() if tag in note.tags])}'
+        notes = '\n'.join([str(note) for note in self.data.values() if tag in note.tags])
         if notes == "":
             return "No notes with this tag found"
         else:
@@ -59,7 +59,7 @@ class Notebook(UserDict):
         return 'No notes with this title'
 
     def __str__(self):
-        return f'{'\n'.join([str(note) for note in self.data.values()])}'
+        return '\n'.join([str(note) for note in self.data.values()])
 
 
 # Class for store and validate e-mail
