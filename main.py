@@ -13,8 +13,10 @@ class Field:
 
 # Class Note for support: tags, search, and editing
 class Note:
-    def __init__(self, content, tags=None):
-        pass
+    def __init__(self, title: str, content: str, tags=None):
+        self.title = title
+        self.content = content
+        self.tags = tags
 
     def add_tag(self, tag):
         pass
@@ -27,12 +29,17 @@ class Note:
 
 
 # Class Notebook for storing and managing notes
-class Notebook:
-    def __init__(self):
-        pass
+class Notebook(UserDict):
 
-    def add_note(self, content, tags=None):
-        pass
+    # Add note to the dict by taking note
+    def add_note(self, note: Note):
+        self.data[str(note.title)] = note
+    
+     # Find note in dict by taking title
+    def find_by_title(self, title:str):
+        if title in self.data:
+            return self.data[title]
+        return None
 
     def find_by_tag(self, tag):
         pass
@@ -93,12 +100,17 @@ def load_data(filename="addressbook.pkl"):
 
 # Function for store Notebook to file
 def save_notebook(notebook, filename="notebook.pkl"):
-    pass
+    with open(filename, 'wb') as file:
+        pickle.dump(notebook, file)
 
 
 # Function for restore Notebook from the file
 def load_notebook(filename="notebook.pkl"):
-    pass
+    try:
+        with open(filename, 'rb') as file:
+            return pickle.load(file)
+    except FileNotFoundError:
+        return Notebook()
 
 
 # Class for storing and validation birthday
@@ -212,7 +224,7 @@ class AddressBook(UserDict):
 
 # CLI Functions
 @input_error
-def parse_input(user_input):
+def parse_input(user_input: str):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
     return cmd, args
@@ -288,8 +300,21 @@ def birthdays_in_days(args, address_book: AddressBook):
 
 
 @input_error
-def add_note(args, notebook: Notebook):
-    pass
+def add_note(args: list[str], notebook: Notebook):
+    # Function add note with data in args (title, note) to the dict notebook
+    try:
+        title, content, *_ = args
+    except ValueError:
+        return "Give me title and content of note please."
+    
+    note = notebook.find_by_title(title)
+
+    if note is None:
+        note = Note(title, content)
+        notebook.add_note(note)
+        return "Note added."
+    else:
+        raise ValueError("Note with this title is already exist")
 
 
 @input_error
