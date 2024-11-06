@@ -393,7 +393,7 @@ def show_all_contacts(book: AddressBook):
 
 
 def suggest_command(user_input):
-    pass
+    return "Sorry, buy this command is invalid!"
 
 
 def main():
