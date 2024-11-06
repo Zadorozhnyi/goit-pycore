@@ -335,11 +335,10 @@ def delete_note(args, notebook: Notebook):
 
 
 @input_error
-def show_all(address_book: AddressBook):
-    if address_book:
-        result = "\n".join([f"{name}: {', '.join([p.value for p in record.phones])}" for name, record in address_book.items()])
-        return f"All contacts:\n{result}"
-    return "No contacts found"
+def show_all_contacts(book: AddressBook):
+    if book.data.items():
+        return ('\n'*2).join(str(record) for record in book.data.values())
+    return 'The address book is empty.'
 
 
 def suggest_command(user_input):
@@ -372,7 +371,7 @@ def main():
         elif command == "phone":
             print(show_phone(args, address_book))
         elif command == "all":
-            print(show_all(address_book))
+            print(show_all_contacts(address_book))
         elif command == "add-birthday":
             print(add_birthday(args, address_book))
         elif command == "show-birthday":
