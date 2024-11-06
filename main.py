@@ -284,7 +284,25 @@ def birthdays(address_book: AddressBook):
 
 @input_error
 def birthdays_in_days(args, address_book: AddressBook):
-    pass
+    try:
+        days = int(args[0])
+        today = datetime.now().date()
+        upcoming_date = today + timedelta(days=days)
+        result = []
+        for record in address_book.values():
+            if record.birthday:
+                birthday_this_year = record.birthday.value.replace(year=today.year)
+                if birthday_this_year < today:
+                    birthday_this_year = birthday_this_year.replace(year=today.year + 1)
+                # Перевіряємо, чи день народження в межах заданої кількості днів
+                if today <= birthday_this_year <= upcoming_date:
+                    result.append(f"{record.name.value} - {birthday_this_year.strftime('%d.%m.%Y')}")
+        if result:
+            return "Birthdays in the next {} days:\n{}".format(days, "\n".join(result))
+        return f"No birthdays in the next {days} days."
+    except ValueError:
+        return "Please specify the number of days as an integer."
+
 
 
 @input_error
