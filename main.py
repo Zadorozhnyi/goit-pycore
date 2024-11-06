@@ -140,26 +140,33 @@ class Record:
         self.phones = []
         self.birthday = None
 
-    def add_phone(self, phone_number):
-        phone = Phone(phone_number)
-        self.phones.append(phone)
+    # Add phone to the record by taking phone, if phone is already exist return
+    def add_phone(self, phone_number:str):
+        if str(Phone(phone_number)) in self.phones:
+            raise ValueError('Phone is already exist.')
+        self.phones.append(str(Phone(phone_number)))
+        return self.phones
 
-    def remove_phone(self, phone_number):
-        phone_to_remove = self.find_phone(phone_number)
-        if phone_to_remove:
-            self.phones.remove(phone_to_remove)
+    # Remove phone from the record by taking phone, if phone not exist return
+    def remove_phone(self, phone_number: str):
+        if str(Phone(phone_number)) not in self.phones:
+            raise ValueError('Phone is not in phones')
+        self.phones.remove(phone_number)
 
-    def edit_phone(self, old_phone_number, new_phone_number):
-        phone_to_edit = self.find_phone(old_phone_number)
-        if phone_to_edit:
-            self.phones.remove(phone_to_edit)
-            self.add_phone(new_phone_number)
+    # Edit phone from the record by taking phone and new phone
+    def edit_phone(self, old_phone_number: str, new_phone_number:str):
+        # Check if phone exist
+        self.find_phone(old_phone_number)
 
-    def find_phone(self, phone_number):
-        for phone in self.phones:
-            if phone.value == phone_number:
-                return phone
-        return None
+        phone_index = self.phones.index(old_phone_number)
+        self.phones.remove(old_phone_number)
+        self.phones.insert(phone_index, new_phone_number)
+
+    # Find phone from the record by taking phone
+    def find_phone(self, phone_number: str):
+        if str(Phone(phone_number)) not in self.phones:
+            raise KeyError
+        return phone_number
 
     def add_birthday(self, birthday):
         self.birthday = Birthday(birthday)
@@ -181,6 +188,8 @@ class AddressBook(UserDict):
     def delete(self, name):
         if name in self.data:
             del self.data[name]
+            return
+        return 'No records with this name'
 
     def get_upcoming_birthdays(self):
         today = datetime.now().date()
@@ -212,10 +221,10 @@ class AddressBook(UserDict):
 
 # CLI Functions
 @input_error
-def parse_input(user_input):
+def parse_input(user_input: str):
     cmd, *args = user_input.split()
     cmd = cmd.strip().lower()
-    return cmd, args
+    return cmd, *args
 
 
 @input_error
@@ -237,13 +246,31 @@ def add_contact(args, address_book: AddressBook):
 
 @input_error
 def change_contact(args, address_book: AddressBook):
-    name, phone = args
-    record = address_book.find(name)
+    # Function takes data about contact and update phone of contact by name
+    try:
+        name, phone, new_phone, *_ = args
+    except ValueError:
+        return 'Please enter name, old phone and new phone!'
+    
+    record: Record = address_book.find(name)
     if record:
-        record.edit_phone(record.phones[0].value, phone)
+        record.edit_phone(phone, new_phone)
         return f"Contact '{name}' updated."
     raise KeyError
 
+@input_error
+def delete_phone(args, address_book: AddressBook):
+    # Function takes data about contact and delete phone of contact by name
+    try:
+        name, phone, *_ = args
+    except ValueError:
+        return 'Please enter name of contact and phone that want to delete!'
+    
+    record: Record = address_book.find(name)
+    if record:
+        record.remove_phone(phone)
+        return f"Contact '{name}' updated."
+    raise KeyError
 
 @input_error
 def show_phone(args, address_book: AddressBook):
@@ -312,7 +339,7 @@ def delete_note(args, notebook: Notebook):
 @input_error
 def show_all(address_book: AddressBook):
     if address_book:
-        result = "\n".join([f"{name}: {', '.join([p.value for p in record.phones])}" for name, record in address_book.items()])
+        result = "\n".join([f"{name}: {', '.join([p for p in record.phones])}" for name, record in address_book.items()])
         return f"All contacts:\n{result}"
     return "No contacts found"
 
@@ -331,11 +358,11 @@ def main():
     print("Welcome to the assistant bot!")
     while True:
         user_input = input("Enter a command: ")
-        command, args = parse_input(user_input)
+        command, *args = parse_input(user_input)
 
         if command in ["close", "exit"]:
             # Save data before exiting
-            save_data(address_book)
+            # save_data(address_book)
             print("Good bye!")
             break
         elif command == "hello":
@@ -344,6 +371,8 @@ def main():
             print(add_contact(args, address_book))
         elif command == "change":
             print(change_contact(args, address_book))
+        elif command == "delete-phone":
+            print(delete_phone(args, address_book))
         elif command == "phone":
             print(show_phone(args, address_book))
         elif command == "all":
