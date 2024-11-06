@@ -184,7 +184,7 @@ class Record:
         self.email = Email(new_email)
 
     def __str__(self):
-        phones_str = '\n  phones: ' + ', '.join(p.value for p in self.phones) if self.phones else ''
+        phones_str = '\n  phones: ' + ', '.join(p for p in self.phones) if self.phones else ''
         birthday_str = f"\n  birthday: {self.birthday}" if self.birthday else ""
         address_str = f"\n  address: {self.address}" if self.address else ""
         email_str = f"\n  email: {self.email}" if self.email else ""
@@ -281,6 +281,41 @@ def add_contact(address_book: AddressBook):
 
 
 @input_error
+def find_contact_by_name(args, address_book: AddressBook):
+    try:
+        name, *_ = args
+    except ValueError:
+        return 'Please enter contact name!'
+
+    record = address_book.find(name)
+    if record:
+        return str(record)
+    raise ValueError(f"Contact with name '{name}' not found.")
+
+
+@input_error
+def find_contact_by_phone(args, address_book: AddressBook):
+    try:
+        phone, *_ = args
+    except ValueError:
+        return 'Please enter phone number!'
+
+    valid_phone = Phone(phone)
+    records = []
+    for record in address_book.data.values():
+        try:
+            if record.find_phone(str(valid_phone)):
+                records.append(record)
+        except KeyError:
+            continue
+        except ValueError as e:
+            print(e)
+    if records:
+        return ('\n'*2).join(str(record) for record in records)
+    raise ValueError(f"Contact with phone number '{phone}' not found.")
+
+
+@input_error
 def change_contact(args, address_book: AddressBook):
     # Function takes data about contact and update phone of contact by name
     try:
@@ -293,6 +328,7 @@ def change_contact(args, address_book: AddressBook):
         record.edit_phone(phone, new_phone)
         return f"Contact '{name}' updated."
     raise KeyError
+
 
 @input_error
 def delete_phone(args, address_book: AddressBook):
@@ -308,12 +344,13 @@ def delete_phone(args, address_book: AddressBook):
         return f"Contact '{name}' updated."
     raise KeyError
 
+
 @input_error
 def show_phone(args, address_book: AddressBook):
     name = args[0]
     record = address_book.find(name)
     if record:
-        return f"Phone for '{name}': {', '.join([p.value for p in record.phones])}"
+        return f"Phone for '{name}': {', '.join([p for p in record.phones])}"
     raise KeyError
 
 
@@ -424,6 +461,10 @@ def main():
             print(add_contact(address_book))
         elif command == "change":
             print(change_contact(args, address_book))
+        elif command == "contact-by-name":
+            print(find_contact_by_name(args, address_book))
+        elif command == "contact-by-phone":
+            print(find_contact_by_phone(args, address_book))
         elif command == "delete-phone":
             print(delete_phone(args, address_book))
         elif command == "phone":
