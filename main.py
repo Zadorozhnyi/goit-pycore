@@ -362,7 +362,7 @@ def main():
 
         if command in ["close", "exit"]:
             # Save data before exiting
-            # save_data(address_book)
+            save_data(address_book)
             print("Good bye!")
             break
         elif command == "hello":
