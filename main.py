@@ -18,15 +18,16 @@ class Note:
         self.content = content
         self.tags = tags
 
-    def add_tag(self, tags):
-        pass
+    # Add tags to the note by taking tags
+    def add_tags(self, tags):
+        self.tags = tags
 
     # Edit note from the notebook by taking new content,
     def update_content(self, new_content):
         self.content = new_content
 
     def __str__(self):
-        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {self.tags if self.tags else "No tags for now("}\n'
+        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {", ".join(self.tags if self.tags else "No tags for now(")}\n'
 
 
 # Class Notebook for storing and managing notes
@@ -301,9 +302,9 @@ def birthdays_in_days(args, address_book: AddressBook):
     pass
 
 
+# Function add note with data in args (title, note) to the dict notebook
 @input_error
 def add_note(notebook: Notebook):
-    # Function add note with data in args (title, note) to the dict notebook
     title = input("Please enter title of note >>> ").strip().lower()
     content = input("Please enter content of note >>> ").strip()
     add_tag = input("Do you wanna add tags? (yes/no) >>> ").strip().lower()
@@ -318,10 +319,28 @@ def add_note(notebook: Notebook):
         return "Note added."
     else:
         raise ValueError("Note with this title is already exist")
+    
+
+# Function add tags to note to the dict notebook  
+@input_error
+def add_tags_to_note(notebook: Notebook):
+    title = input("Please enter title of note >>> ").strip().lower()
+    tags = input("Please enter tags splited by space >>> ").strip().split()
+
+    if tags == []:
+        return "No tags was printed"
+
+    note: Note = notebook.find_by_title(title)
+
+    if note is not None:
+        note.add_tags(tags)
+        return "Tags for note added."
+    else:
+        raise ValueError("Note with this title is not exist")
 
 
 @input_error
-def find_note_by_tag(args, notebook: Notebook):
+def find_note_by_tag(args: list[str], notebook: Notebook):
     pass
 
 
@@ -415,6 +434,8 @@ def main():
             print(birthdays_in_days(args, address_book))
         elif command == "add-note":
             print(add_note(notebook))
+        elif command == "add-tags":
+            print(add_tags_to_note(notebook))
         elif command == "find-note":
             print(find_note_by_tag(args, notebook))
         elif command == "edit-note":
