@@ -300,12 +300,13 @@ def birthdays_in_days(args, address_book: AddressBook):
 
 
 @input_error
-def add_note(args: list[str], notebook: Notebook):
+def add_note(notebook: Notebook):
     # Function add note with data in args (title, note) to the dict notebook
-    try:
-        title, content, *_ = args
-    except ValueError:
-        return "Give me title and content of note please."
+    title = input("Please enter title of note >>> ").strip()
+    content = input("Please enter content of note >>> ").strip()
+    add_tag = input("Do you wanna add tags? (yes/no) >>> ").strip().lower()
+    if (add_tag == "yes"):
+        tags = input("Please enter tags for note >>> ").strip()
     
     note = notebook.find_by_title(title)
 
@@ -381,7 +382,7 @@ def main():
         elif command == "birthdays-in-days":
             print(birthdays_in_days(args, address_book))
         elif command == "add-note":
-            print(add_note(args, notebook))
+            print(add_note(notebook))
         elif command == "find-note":
             print(find_note_by_tag(args, notebook))
         elif command == "edit-note":
