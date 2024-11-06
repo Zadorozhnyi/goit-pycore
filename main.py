@@ -58,6 +58,20 @@ class Notebook(UserDict):
             return
         return 'No notes with this title'
 
+    @classmethod
+    def load_notebook(cls, filename="notebook.pkl"):
+        try:
+            with open(filename, 'rb') as file:
+                return pickle.load(file)
+        except FileNotFoundError:
+            return cls()
+
+    def save_notebook(self, filename="notebook.pkl"):
+        with open(filename, 'wb') as file:
+            pickle.dump(self, file)
+
+
+
     def __str__(self):
         return f'{'\n'.join([str(note) for note in self.data.values()])}'
 
@@ -251,6 +265,18 @@ class AddressBook(UserDict):
                     })
 
         return result
+
+    @classmethod
+    def load_data(cls, filename="addressbook.pkl"):
+        try:
+            with open(filename, "rb") as file:
+                return pickle.load(file)
+        except FileNotFoundError:
+            return cls()
+
+    def save_data(self, filename="addressbook.pkl"):
+        with open(filename, "wb") as file:
+            pickle.dump(self, file)    
 
 
 # CLI Functions
@@ -524,11 +550,12 @@ def suggest_command(user_input):
 
 
 def main():
+
     # Load existing address book data if available
-    address_book = load_data()
+    address_book = AddressBook.load_data()
 
     # Load existing Notebook data if available
-    notebook = load_notebook()
+    notebook = Notebook.load_notebook()
     
     print("Welcome to the assistant bot!")
     while True:
@@ -537,8 +564,8 @@ def main():
 
         if command in ["close", "exit"]:
             # Save data before exiting
-            save_data(address_book)
-            save_notebook(notebook)
+            address_book.save_data()
+            notebook.save_notebook()
             print("Good bye!")
             break
         elif command == "hello":
