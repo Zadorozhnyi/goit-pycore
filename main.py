@@ -308,8 +308,6 @@ def find_contact_by_phone(args, address_book: AddressBook):
                 records.append(record)
         except KeyError:
             continue
-        except ValueError as e:
-            print(e)
     if records:
         return ('\n'*2).join(str(record) for record in records)
     raise ValueError(f"Contact with phone number '{phone}' not found.")
