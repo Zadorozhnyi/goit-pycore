@@ -309,11 +309,11 @@ def birthdays_in_days(args, address_book: AddressBook):
 # Function add note with data in args (title, note) to the dict notebook
 @input_error
 def add_note(notebook: Notebook):
-    title = input("Please enter title of note >>> ").strip().lower()
-    content = input("Please enter content of note >>> ").strip()
-    add_tag = input("Do you wanna add tags? (yes/no) >>> ").strip().lower()
+    title = input("Please enter title of note: ").strip().lower()
+    content = input("Please enter content of note: ").strip()
+    add_tag = input("Do you wanna add tags? (yes/no): ").strip().lower()
     if (add_tag == "yes"):
-        tags = input("Please enter tags for note >>> ").strip().split()
+        tags = input("Please enter tags for note: ").strip().split()
     
     note = notebook.find_by_title(title)
 
@@ -328,8 +328,8 @@ def add_note(notebook: Notebook):
 # Function add tags to note to the dict notebook  
 @input_error
 def add_tags_to_note(notebook: Notebook):
-    title = input("Please enter title of note >>> ").strip().lower()
-    tags = input("Please enter tags splited by space >>> ").strip().split()
+    title = input("Please enter title of note: ").strip().lower()
+    tags = input("Please enter tags splited by space: ").strip().split()
 
     if tags == []:
         return "No tags was printed"
@@ -357,8 +357,8 @@ def find_note_by_tag(args: list[str], notebook: Notebook):
 # Function for editing notes
 @input_error
 def edit_note(notebook: Notebook):
-    title = input("Please enter title of note >>> ").strip().lower()
-    content = input("Please enter new content of note >>> ").strip()
+    title = input("Please enter title of note: ").strip().lower()
+    content = input("Please enter new content of note: ").strip()
     
     note: Note = notebook.find_by_title(title)
 
