@@ -21,7 +21,8 @@ class Note:
 
     # Add tags to the note by taking tags
     def add_tags(self, tags):
-        self.tags = tags
+        self.tags.extend(tags)
+        self.tags = list({*self.tags})
 
     # Edit note from the notebook by taking new content,
     def update_content(self, new_content):
@@ -451,7 +452,11 @@ def add_note(notebook: Notebook):
     note = notebook.find_by_title(title)
 
     if note is None:
-        note = Note(title, content, tags)
+        if tags == []: 
+            note = Note(title, content)
+        else:
+            formated_tags = {*tags}
+            note = Note(title, content, list(formated_tags))
         notebook.add_note(note)
         return "Note added."
     else:
@@ -470,7 +475,8 @@ def add_tags_to_note(notebook: Notebook):
     note: Note = notebook.find_by_title(title)
 
     if note is not None:
-        note.add_tags(tags)
+        formated_tags = {*tags}
+        note.add_tags(list(formated_tags))
         return "Tags for note added."
     else:
         raise ValueError("Note with this title is not exist")
