@@ -21,14 +21,16 @@ class Note:
 
     # Add tags to the note by taking tags
     def add_tags(self, tags):
-        self.tags = tags
+        self.tags.extend(tags)
+        self.tags = list({*self.tags})
 
     # Edit note from the notebook by taking new content,
     def update_content(self, new_content):
         self.content = new_content
 
     def __str__(self):
-        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {", ".join(self.tags)}\n'
+        tags = "No tags for now" if self.tags == [] else ", ".join(self.tags)
+        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {tags}\n'
 
 
 # Class Notebook for storing and managing notes
@@ -302,7 +304,7 @@ def find_contact_by_name(args, address_book: AddressBook):
     try:
         name, *_ = args
     except ValueError:
-        return 'Please enter contact name!'
+        return 'Please enter contact name near the command!'
 
     record = address_book.find(name)
     if record:
@@ -315,7 +317,7 @@ def find_contact_by_phone(args, address_book: AddressBook):
     try:
         phone, *_ = args
     except ValueError:
-        return 'Please enter phone number!'
+        return 'Please enter phone number near the command!'
 
     valid_phone = Phone(phone)
     records = []
@@ -336,7 +338,7 @@ def change_contact(args, address_book: AddressBook):
     try:
         name, phone, new_phone, *_ = args
     except ValueError:
-        return 'Please enter name, old phone and new phone!'
+        return 'Please enter name, old phone and new phone near the command!'
     
     record: Record = address_book.find(name)
     if record:
@@ -362,7 +364,11 @@ def delete_phone(args, address_book: AddressBook):
 
 @input_error
 def show_phone(args, address_book: AddressBook):
-    name = args[0]
+    try:
+        name = args[0]
+    except IndexError:
+        return 'Please enter name of contact near the command!'
+
     record = address_book.find(name)
     if record:
         return f"Phone for '{name}': {', '.join([p.value for p in record.phones])}"
@@ -371,8 +377,12 @@ def show_phone(args, address_book: AddressBook):
 
 @input_error
 def add_birthday(args, address_book: AddressBook):
-    name, birthday = args
-    record = address_book.find(name)
+    try:
+        name, birthday, *_ = args
+    except ValueError:
+        return 'Please enter name of contact and birthday near the command!'
+    
+    record: Record = address_book.find(name)
     if record:
         record.add_birthday(birthday)
         return f"Birthday for '{name}' added/updated."
@@ -381,8 +391,12 @@ def add_birthday(args, address_book: AddressBook):
 
 @input_error
 def show_birthday(args, address_book: AddressBook):
-    name = args[0]
-    record = address_book.find(name)
+    try:
+        name = args[0]
+    except IndexError:
+        return 'Please enter name of contact near the command!'
+    
+    record: Record = address_book.find(name)
     if record and record.birthday:
         return f"Birthday for '{name}': {record.birthday}"
     raise KeyError
@@ -400,7 +414,11 @@ def birthdays(address_book: AddressBook):
 @input_error
 def birthdays_in_days(args, address_book: AddressBook):
     try:
-        days = int(args[0])
+        try:
+            days = int(args[0])
+        except IndexError:
+            return 'Please enter number of days near the command!'
+        
         today = datetime.now().date()
         upcoming_date = today + timedelta(days=days)
         result = []
@@ -428,11 +446,17 @@ def add_note(notebook: Notebook):
     add_tag = input("Do you wanna add tags? (yes/no): ").strip().lower()
     if (add_tag == "yes"):
         tags = input("Please enter tags for note: ").strip().split()
+    else:
+        tags = []
     
     note = notebook.find_by_title(title)
 
     if note is None:
-        note = Note(title, content, tags)
+        if tags == []: 
+            note = Note(title, content)
+        else:
+            formated_tags = {*tags}
+            note = Note(title, content, list(formated_tags))
         notebook.add_note(note)
         return "Note added."
     else:
@@ -451,7 +475,8 @@ def add_tags_to_note(notebook: Notebook):
     note: Note = notebook.find_by_title(title)
 
     if note is not None:
-        note.add_tags(tags)
+        formated_tags = {*tags}
+        note.add_tags(list(formated_tags))
         return "Tags for note added."
     else:
         raise ValueError("Note with this title is not exist")
