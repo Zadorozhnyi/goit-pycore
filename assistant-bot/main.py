@@ -1,5 +1,5 @@
-from src.contacts.models.address_book import AddressBook
-from src.notes.models.notebook import Notebook
+from src.contacts.classes.address_book import AddressBook
+from src.notes.classes.notebook import Notebook
 from src.utils.parse_input import parse_input
 from src.contacts.input_handle import *
 from src.notes.input_handle import *

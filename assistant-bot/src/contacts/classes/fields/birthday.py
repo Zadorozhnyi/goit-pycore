@@ -1,5 +1,5 @@
 from datetime import datetime
-from src.utils.models.field import Field
+from src.utils.classes.field import Field
 
 # Class for storing and validation birthday
 class Birthday(Field):

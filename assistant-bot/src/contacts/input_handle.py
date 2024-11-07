@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from src.decorators.input_error import input_error
-from src.contacts.models.address_book import AddressBook
-from src.contacts.models.record import Record
-from src.contacts.models.fields.phone import Phone
+from src.contacts.classes.address_book import AddressBook
+from src.contacts.classes.record import Record
+from src.contacts.classes.fields.phone import Phone
 
 @input_error
 def add_contact(address_book: AddressBook):

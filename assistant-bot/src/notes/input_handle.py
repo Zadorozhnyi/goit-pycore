@@ -1,6 +1,6 @@
 from src.decorators.input_error import input_error
-from src.notes.models.notebook import Notebook
-from src.notes.models.note import Note
+from src.notes.classes.notebook import Notebook
+from src.notes.classes.note import Note
 
 # Function add note with data in args (title, note) to the dict notebook
 @input_error

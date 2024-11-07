@@ -1,8 +1,8 @@
-from src.contacts.models.fields.name import Name
-from src.contacts.models.fields.phone import Phone
-from src.contacts.models.fields.birthday import Birthday
-from src.contacts.models.fields.address import Address
-from src.contacts.models.fields.email import Email
+from src.contacts.classes.fields.name import Name
+from src.contacts.classes.fields.phone import Phone
+from src.contacts.classes.fields.birthday import Birthday
+from src.contacts.classes.fields.address import Address
+from src.contacts.classes.fields.email import Email
 
 # Class for storing records
 class Record:

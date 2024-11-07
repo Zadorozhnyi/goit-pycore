@@ -1,4 +1,4 @@
-from src.utils.models.field import Field
+from src.utils.classes.field import Field
 
 # Class for storing and validation phone number
 class Phone(Field):

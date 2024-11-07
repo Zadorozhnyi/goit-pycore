@@ -1,6 +1,6 @@
 import pickle
 from collections import UserDict
-from src.notes.models.note import Note
+from src.notes.classes.note import Note
 
 # Class Notebook for storing and managing notes
 class Notebook(UserDict):
