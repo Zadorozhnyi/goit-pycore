@@ -1,8 +1,10 @@
 from src.contacts.classes.address_book import AddressBook
 from src.notes.classes.notebook import Notebook
 from src.utils.parse_input import parse_input
+from src.utils.show_menu import show_menu
 from src.contacts.input_handle import *
 from src.notes.input_handle import *
+from src.constants import COMMANDS
 
 # Bot version
 def get_app_version():
@@ -21,49 +23,51 @@ def main():
         user_input = input("Enter a command: ")
         command, *args = parse_input(user_input)
 
-        if command in ["close", "exit"]:
+        if command in [COMMANDS["CLOSE"], COMMANDS["EXIT"]]:
             # Save data before exiting
             address_book.save_data()
             notebook.save_notebook()
             print("Good bye!")
             break
-        elif command == "hello":
+        elif command == COMMANDS["HELP"]:
+            print(show_menu())
+        elif command == COMMANDS["HELLO"]:
             print("How can I help you?")
-        elif command == "add":
+        elif command == COMMANDS["ADD_CONTACT"]:
             print(add_contact(address_book))
-        elif command == "change":
+        elif command == COMMANDS["CHANGE_PHONE_OF_CONTACT"]:
             print(change_contact(args, address_book))
-        elif command == "contact-by-name":
+        elif command == COMMANDS["FIND_CONTACT_BY_NAME"]:
             print(find_contact_by_name(args, address_book))
-        elif command == "contact-by-phone":
+        elif command == COMMANDS["FIND_CONTACT_BY_PHONE"]:
             print(find_contact_by_phone(args, address_book))
-        elif command == "delete-phone":
+        elif command == COMMANDS["DELETE_PHONE"]:
             print(delete_phone(args, address_book))
-        elif command == "phone":
+        elif command == COMMANDS["SHOW_PHONE"]:
             print(show_phone(args, address_book))
-        elif command == "all-contacts":
+        elif command == COMMANDS["ALL_CONTACTS"]:
             print(show_all_contacts(address_book))
-        elif command == "add-birthday":
+        elif command == COMMANDS["ADD_BIRTHDAY"]:
             print(add_birthday(args, address_book))
-        elif command == "show-birthday":
+        elif command == COMMANDS["SHOW_BIRTHDAY"]:
             print(show_birthday(args, address_book))
-        elif command == "birthdays":
+        elif command == COMMANDS["GET_UPCOMING_BIRTHDAYS"]:
             print(birthdays(address_book))
-        elif command == "birthdays-in-days":
+        elif command == COMMANDS["GET_BIRTHDAYS_IN_DAYS"]:
             print(birthdays_in_days(args, address_book))
-        elif command == "add-note":
+        elif command == COMMANDS["ADD_NOTE"]:
             print(add_note(notebook))
-        elif command == "add-tags":
+        elif command == COMMANDS["ADD_TAGS"]:
             print(add_tags_to_note(notebook))
-        elif command == "find-note":
+        elif command == COMMANDS["FIND_NOTE_BY_TAG"]:
             print(find_note_by_tag(args, notebook))
-        elif command == "edit-note":
+        elif command == COMMANDS["EDIT_NOTE_CONTENT"]:
             print(edit_note(notebook))
-        elif command == "delete-note":
+        elif command == COMMANDS["DELETE_NOTE"]:
             print(delete_note(args, notebook))
-        elif command == "all-notes":
+        elif command == COMMANDS["ALL_NOTES"]:
             print(show_all_notes(notebook))
-        elif command == "version":
+        elif command == COMMANDS["SHOW_VERSION"]:
             print(get_app_version())
         else:
             print("Sorry, buy this command is invalid!")
