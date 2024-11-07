@@ -3,6 +3,10 @@ import re
 from collections import UserDict
 from datetime import datetime, timedelta
 
+# Bot version
+def get_app_version():
+    return "1.0.0"
+
 # Base class Field
 class Field:
     def __init__(self, value):
@@ -600,6 +604,8 @@ def main():
             print(delete_note(args, notebook))
         elif command == "all-notes":
             print(show_all_notes(notebook))
+        elif command == "version":
+            print(get_app_version())
         else:
             print(suggest_command(command))
 
