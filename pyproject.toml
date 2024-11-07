@@ -4,7 +4,7 @@ version = "1.0.0"
 description = "A command-line assistant bot to manage contacts and notes."
 authors = ["Project_team2"]
 packages = [
-    { include = "assistant-bot" }
+    { include = "src" }
 ]
 license = "MIT"
 
@@ -12,7 +12,7 @@ license = "MIT"
 python = "^3.8"
 
 [tool.poetry.scripts]
-assistant-bot = "assistant-bot.main:main"
+assistant-bot = "src.main:main"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
