@@ -33,7 +33,6 @@ class Note:
 
 # Class Notebook for storing and managing notes
 class Notebook(UserDict):
-
     # Add note to the dict by taking note
     def add_note(self, note: Note):
         self.data[str(note.title)] = note
@@ -58,6 +57,7 @@ class Notebook(UserDict):
             return
         return 'No notes with this title'
 
+    # Function for restore Notebook from the file
     @classmethod
     def load_notebook(cls, filename="notebook.pkl"):
         try:
@@ -66,11 +66,10 @@ class Notebook(UserDict):
         except FileNotFoundError:
             return cls()
 
+    # Function for store Notebook to file
     def save_notebook(self, filename="notebook.pkl"):
         with open(filename, 'wb') as file:
             pickle.dump(self, file)
-
-
 
     def __str__(self):
         return f'{'\n'.join([str(note) for note in self.data.values()])}'
@@ -104,37 +103,6 @@ def input_error(func):
         except IndexError:
             return "Enter the argument for the command"
     return inner
-
-
-# Function for store data to file
-def save_data(book, filename="addressbook.pkl"):
-    with open(filename, "wb") as f:
-        pickle.dump(book, f)
-
-
-# Function for restore data from the file
-def load_data(filename="addressbook.pkl"):
-    try:
-        with open(filename, "rb") as f:
-            return pickle.load(f)
-    except FileNotFoundError:
-        # Return a new address book if the file is not found
-        return AddressBook()
-
-
-# Function for store Notebook to file
-def save_notebook(notebook, filename="notebook.pkl"):
-    with open(filename, 'wb') as file:
-        pickle.dump(notebook, file)
-
-
-# Function for restore Notebook from the file
-def load_notebook(filename="notebook.pkl"):
-    try:
-        with open(filename, 'rb') as file:
-            return pickle.load(file)
-    except FileNotFoundError:
-        return Notebook()
 
 
 # Class for storing and validation birthday
@@ -266,14 +234,17 @@ class AddressBook(UserDict):
 
         return result
 
+    # Function for restore data from the file
     @classmethod
     def load_data(cls, filename="addressbook.pkl"):
         try:
             with open(filename, "rb") as file:
                 return pickle.load(file)
         except FileNotFoundError:
+            # Return a new address book if the file is not found
             return cls()
 
+    # Function for store data to file
     def save_data(self, filename="addressbook.pkl"):
         with open(filename, "wb") as file:
             pickle.dump(self, file)    
