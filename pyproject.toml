@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "assistant-bot"
-version = "1.0.0"
+version = "1.2.0"
 description = "A command-line assistant bot to manage contacts and notes."
-authors = ["Project_team2"]
+authors = ["CleverPath_team"]
 packages = [
     { include = "src" }
 ]
@@ -10,6 +10,8 @@ license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.8"
+prompt-toolkit = "^3.0.48"
+colorama = "^0.4.6"
 
 [tool.poetry.scripts]
 assistant-bot = "src.main:main"

@@ -11,7 +11,7 @@ from src.constants import COMMANDS
 
 # Bot version
 def get_app_version():
-    return "1.1.0"
+    return "1.2.0"
 
 def main():
     path = get_run_path()
