@@ -1,6 +1,7 @@
 import pickle
 from collections import UserDict
 from datetime import datetime, timedelta
+from pathlib import Path
 
 # Class for work with address book
 class AddressBook(UserDict):
@@ -45,15 +46,15 @@ class AddressBook(UserDict):
 
     # Function for restore data from the file
     @classmethod
-    def load_data(cls, filename="addressbook.pkl"):
+    def load_data(cls, path, filename="addressbook.pkl"):
         try:
-            with open(filename, "rb") as file:
+            with open(Path(path) / filename, "rb") as file:
                 return pickle.load(file)
         except FileNotFoundError:
             # Return a new address book if the file is not found
             return cls()
 
     # Function for store data to file
-    def save_data(self, filename="addressbook.pkl"):
-        with open(filename, "wb") as file:
+    def save_data(self, path, filename="addressbook.pkl"):
+        with open(Path(path) / filename, "wb") as file:
             pickle.dump(self, file)    
