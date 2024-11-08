@@ -20,7 +20,6 @@ def main():
     notebook = Notebook.load_notebook()
 
     session = get_prompt_pession()
-    # PromptSession(completer=CommandCompleter(), multiline=False)
 
     print("Welcome to the assistant bot!")
     while True:
