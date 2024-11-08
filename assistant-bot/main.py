@@ -2,6 +2,9 @@ import pickle
 import re
 from collections import UserDict
 from datetime import datetime, timedelta
+import os
+import sys
+from pathlib import Path
 
 # Bot version
 def get_app_version():
@@ -65,16 +68,16 @@ class Notebook(UserDict):
 
     # Function for restore Notebook from the file
     @classmethod
-    def load_notebook(cls, filename="notebook.pkl"):
+    def load_notebook(cls, path, filename="notebook.pkl"):
         try:
-            with open(filename, 'rb') as file:
+            with open(path+filename, 'rb') as file:
                 return pickle.load(file)
         except FileNotFoundError:
             return cls()
 
     # Function for store Notebook to file
-    def save_notebook(self, filename="notebook.pkl"):
-        with open(filename, 'wb') as file:
+    def save_notebook(self, path, filename="notebook.pkl"):
+        with open(path+filename, 'wb') as file:
             pickle.dump(self, file)
 
     def __str__(self):
@@ -242,17 +245,17 @@ class AddressBook(UserDict):
 
     # Function for restore data from the file
     @classmethod
-    def load_data(cls, filename="addressbook.pkl"):
+    def load_data(cls, path, filename="addressbook.pkl"):
         try:
-            with open(filename, "rb") as file:
+            with open(path+filename, "rb") as file:
                 return pickle.load(file)
         except FileNotFoundError:
             # Return a new address book if the file is not found
             return cls()
 
     # Function for store data to file
-    def save_data(self, filename="addressbook.pkl"):
-        with open(filename, "wb") as file:
+    def save_data(self, path, filename="addressbook.pkl"):
+        with open(path+filename, "wb") as file:
             pickle.dump(self, file)    
 
 
@@ -550,12 +553,22 @@ def suggest_command(user_input):
 
 
 def main():
+    start_path = os.getcwd()
+    print("Script location:", start_path)
+    
+    if len(sys.argv) > 1:
+        path = sys.argv[1]
+    else:
+        path = os.getcwd()
+
+    folder = Path(path)
+    folder.mkdir(parents=True, exist_ok=True)
 
     # Load existing address book data if available
-    address_book = AddressBook.load_data()
+    address_book = AddressBook.load_data(path)
 
     # Load existing Notebook data if available
-    notebook = Notebook.load_notebook()
+    notebook = Notebook.load_notebook(path)
     
     print("Welcome to the assistant bot!")
     while True:
@@ -564,8 +577,8 @@ def main():
 
         if command in ["close", "exit"]:
             # Save data before exiting
-            address_book.save_data()
-            notebook.save_notebook()
+            address_book.save_data(path)
+            notebook.save_notebook(path)
             print("Good bye!")
             break
         elif command == "hello":
