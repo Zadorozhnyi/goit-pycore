@@ -1,32 +1,45 @@
 from src.contacts.classes.address_book import AddressBook
 from src.notes.classes.notebook import Notebook
-from src.utils.parse_input import parse_input
+from src.utils.parse_input import parse_input, get_prompt_pession
 from src.utils.show_menu import show_menu
+from src.utils.create_path import get_run_path
+from src.utils.suggest_command import suggest_command
 from src.contacts.input_handle import *
 from src.notes.input_handle import *
 from src.constants import COMMANDS
 
+
 # Bot version
 def get_app_version():
-    return "1.0.0"
+    return "1.1.0"
 
 def main():
+    path = get_run_path()
+
+    if path == COMMANDS["HELP"]:
+        print(show_menu())
+        path = ""
 
     # Load existing address book data if available
-    address_book = AddressBook.load_data()
+    address_book = AddressBook.load_data(path)
 
     # Load existing Notebook data if available
-    notebook = Notebook.load_notebook()
-    
+    notebook = Notebook.load_notebook(path)
+
+    session = get_prompt_pession()
+
     print("Welcome to the assistant bot!")
     while True:
-        user_input = input("Enter a command: ")
-        command, *args = parse_input(user_input)
+        try:
+            user_input = session.prompt("Enter a command: ").strip()
+            command, *args = parse_input(user_input)
+        except (EOFError, KeyboardInterrupt):
+            command = "close"
 
         if command in [COMMANDS["CLOSE"], COMMANDS["EXIT"]]:
             # Save data before exiting
-            address_book.save_data()
-            notebook.save_notebook()
+            address_book.save_data(path)
+            notebook.save_notebook(path)
             print("Good bye!")
             break
         elif command == COMMANDS["HELP"]:
@@ -70,7 +83,7 @@ def main():
         elif command == COMMANDS["SHOW_VERSION"]:
             print(get_app_version())
         else:
-            print("Sorry, buy this command is invalid!")
+            print(f"Unknown command. {suggest_command(command)}")
 
 
 # Start the main function

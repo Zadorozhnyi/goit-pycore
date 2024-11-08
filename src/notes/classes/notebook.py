@@ -1,6 +1,7 @@
 import pickle
 from collections import UserDict
 from src.notes.classes.note import Note
+from pathlib import Path
 
 # Class Notebook for storing and managing notes
 class Notebook(UserDict):
@@ -30,16 +31,16 @@ class Notebook(UserDict):
 
     # Function for restore Notebook from the file
     @classmethod
-    def load_notebook(cls, filename="notebook.pkl"):
+    def load_notebook(cls, path, filename="notebook.pkl"):
         try:
-            with open(filename, 'rb') as file:
+            with open(Path(path) / filename, 'rb') as file:
                 return pickle.load(file)
         except FileNotFoundError:
             return cls()
 
     # Function for store Notebook to file
-    def save_notebook(self, filename="notebook.pkl"):
-        with open(filename, 'wb') as file:
+    def save_notebook(self, path, filename="notebook.pkl"):
+        with open(Path(path) / filename, 'wb') as file:
             pickle.dump(self, file)
 
     def __str__(self):
