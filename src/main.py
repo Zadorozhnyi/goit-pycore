@@ -56,6 +56,8 @@ def main():
             print(find_contact_by_phone(args, address_book))
         elif command == COMMANDS["DELETE_PHONE"]:
             print(delete_phone(args, address_book))
+        elif command == COMMANDS["DELETE_CONTACT"]:
+            print(delete_contact(args, address_book))
         elif command == COMMANDS["SHOW_PHONE"]:
             print(show_phone(args, address_book))
         elif command == COMMANDS["ALL_CONTACTS"]:

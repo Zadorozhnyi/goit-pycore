@@ -30,6 +30,10 @@ def show_menu():
             "arg": "    |name|  |phone|",
             "desc": "Delete phone from the contact"
         },
+        COMMANDS["DELETE_CONTACT"]: {
+            "arg": "    |name|",
+            "desc": "Delete contact"
+        },
         COMMANDS["SHOW_PHONE"]: {
             "arg": "    |name|",
             "desc": "Show phones of the contact"

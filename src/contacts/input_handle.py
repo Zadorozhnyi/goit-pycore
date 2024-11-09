@@ -107,6 +107,23 @@ def delete_phone(args, address_book: AddressBook):
 
 
 @input_error
+def delete_contact(args, address_book: AddressBook):
+    # Function takes data about contact and delete contact
+    try:
+        name, *_ = args
+    except ValueError:
+        return "Please enter name of contact that you want to delete"
+    
+    record: Record = address_book.find(name)
+
+    if record is not None:
+        address_book.delete(name)
+        return "Contact deleted."
+    else:
+        raise ValueError("Contact with this name is not exist")
+    
+
+@input_error
 def show_phone(args, address_book: AddressBook):
     try:
         name = args[0]
