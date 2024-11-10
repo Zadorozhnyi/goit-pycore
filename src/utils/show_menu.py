@@ -1,3 +1,4 @@
+from colorama import Fore
 from src.constants import COMMANDS
 
 def show_menu():
@@ -89,17 +90,17 @@ def show_menu():
 
     rows_common = []
     for key, value in description_common.items():
-        rows_common.append(f'|{key:<15}|{value:<25}|\n')
-    table_common = f'\n{" "*17}Common{" "*17}\n{"-"*42}\n|{" "*4}Command{" "*4}|{" "*7}Description{" "*7}|\n{"-"*42}\n{"".join(rows_common)}{"-"*42}\n'
+        rows_common.append(f'{Fore.BLUE}|{Fore.RESET}{key:<15}{Fore.BLUE}|{Fore.RESET}{value:<25}{Fore.BLUE}|{Fore.RESET}\n')
+    table_common = f'\n{" "*17}Common{" "*17}\n{Fore.BLUE}{"-"*42}\n|{Fore.RESET}{" "*4}Command{" "*4}{Fore.BLUE}|{Fore.RESET}{" "*7}Description{" "*7}{Fore.BLUE}|{Fore.RESET}\n{Fore.BLUE}{"-"*42}{Fore.RESET}\n{"".join(rows_common)}{Fore.BLUE}{"-"*42}{Fore.RESET}\n'
 
     rows_contacts = []
     for key, value in description_contacts.items():
-        rows_contacts.append(f'|{key:<20}|{value["arg"]:<42}|{value["desc"]:<45}|\n')
-    table_contacts = f'\n{" "*49}Contacts{" "*49}\n{"-"*110}\n|{" "*6}Command{" "*7}|{" "*16}Arguments{" "*17}|{" "*17}Description{" "*17}|\n{"-"*110}\n{"".join(rows_contacts)}{"-"*110}\n'
+        rows_contacts.append(f'{Fore.BLUE}|{Fore.RESET}{key:<20}{Fore.BLUE}|{Fore.RESET}{value["arg"]:<42}{Fore.BLUE}|{Fore.RESET}{value["desc"]:<45}{Fore.BLUE}|{Fore.RESET}\n')
+    table_contacts = f'\n{" "*49}Contacts{" "*49}\n{Fore.BLUE}{"-"*110}\n|{Fore.RESET}{" "*6}Command{" "*7}{Fore.BLUE}|{Fore.RESET}{" "*16}Arguments{" "*17}{Fore.BLUE}|{Fore.RESET}{" "*17}Description{" "*17}{Fore.BLUE}|\n{"-"*110}{Fore.RESET}\n{"".join(rows_contacts)}{Fore.BLUE}{"-"*110}{Fore.RESET}\n'
 
     rows_notes = []
     for key, value in description_notes.items():
-        rows_notes.append(f'|{key:<15}|{value["arg"]:<15}|{value["desc"]:<25}|\n')
-    table_notes = f'\n{" "*25}Notes{" "*25}\n{"-"*58}\n|{" "*4}Command{" "*4}|{" "*3}Arguments{" "*3}|{" "*7}Description{" "*7}|\n{"-"*58}\n{"".join(rows_notes)}{"-"*58}\n'
+        rows_notes.append(f'{Fore.BLUE}|{Fore.RESET}{key:<15}{Fore.BLUE}|{Fore.RESET}{value["arg"]:<15}{Fore.BLUE}|{Fore.RESET}{value["desc"]:<25}{Fore.BLUE}|\n')
+    table_notes = f'\n{" "*25}Notes{" "*25}\n{Fore.BLUE}{"-"*58}\n|{Fore.RESET}{" "*4}Command{" "*4}{Fore.BLUE}|{Fore.RESET}{" "*3}Arguments{" "*3}{Fore.BLUE}|{Fore.RESET}{" "*7}Description{" "*7}{Fore.BLUE}|{Fore.RESET}\n{Fore.BLUE}{"-"*58}{Fore.RESET}\n{"".join(rows_notes)}{Fore.BLUE}{"-"*58}{Fore.RESET}\n'
 
     return f"{table_common}\n{table_contacts}\n{table_notes}"

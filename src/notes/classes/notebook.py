@@ -1,3 +1,4 @@
+from colorama import Fore
 import pickle
 from collections import UserDict
 from src.notes.classes.note import Note
@@ -18,7 +19,7 @@ class Notebook(UserDict):
     def find_by_tag(self, tag):
         notes = '\n'.join([str(note) for note in self.data.values() if tag in note.tags])
         if notes == "":
-            return "No notes with this tag found"
+            return f"{Fore.YELLOW}No notes with this tag found{Fore.RESET}"
         else:
             return notes
 
@@ -27,7 +28,7 @@ class Notebook(UserDict):
         if title in self.data:
             del self.data[title]
             return
-        return 'No notes with this title'
+        return f'{Fore.YELLOW}No notes with this title{Fore.RESET}'
 
     # Function for restore Notebook from the file
     @classmethod

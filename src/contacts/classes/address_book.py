@@ -1,3 +1,4 @@
+from colorama import Fore
 import pickle
 from collections import UserDict
 from datetime import datetime, timedelta
@@ -15,7 +16,7 @@ class AddressBook(UserDict):
         if name in self.data:
             del self.data[name]
             return
-        return 'No records with this name'
+        return f'{Fore.YELLOW}No records with this name{Fore.RESET}'
 
     def get_upcoming_birthdays(self):
         today = datetime.now().date()
