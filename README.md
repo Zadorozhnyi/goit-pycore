@@ -56,7 +56,7 @@ Before installing, ensure you have the following dependencies installed:
 
 * For Linux or MAC run:
    ```
-    install-unix.sh
+    ./install-unix.sh
    ```
 
 2. **Uninstall the application**:
@@ -67,7 +67,7 @@ Before installing, ensure you have the following dependencies installed:
 
 * For Linux or MAC run:
    ```
-    uninstall-unix.sh
+    ./uninstall-unix.sh
    ```
 
 ### Executing assistant-bot
@@ -138,4 +138,4 @@ Before installing, ensure you have the following dependencies installed:
     * Final Release
 
 ## License
-MIT, see ``license.txt``
+MIT, see the local ``license.txt`` file
