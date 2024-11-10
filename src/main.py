@@ -1,3 +1,4 @@
+from colorama import just_fix_windows_console, Fore
 from src.contacts.classes.address_book import AddressBook
 from src.notes.classes.notebook import Notebook
 from src.utils.parse_input import parse_input, get_prompt_pession
@@ -8,6 +9,7 @@ from src.contacts.input_handle import *
 from src.notes.input_handle import *
 from src.constants import COMMANDS
 
+just_fix_windows_console()
 
 # Bot version
 def get_app_version():
@@ -28,7 +30,7 @@ def main():
 
     session = get_prompt_pession()
 
-    print("Welcome to the assistant bot!")
+    print(f"{Fore.GREEN}Welcome to the assistant bot!{Fore.GREEN}")
     while True:
         try:
             user_input = session.prompt("Enter a command: ").strip()
@@ -40,22 +42,24 @@ def main():
             # Save data before exiting
             address_book.save_data(path)
             notebook.save_notebook(path)
-            print("Good bye!")
+            print(f"{Fore.BLUE}Good bye!{Fore.RESET}")
             break
         elif command == COMMANDS["HELP"]:
             print(show_menu())
         elif command == COMMANDS["HELLO"]:
-            print("How can I help you?")
+            print(f"{Fore.BLUE}How can I help you?{Fore.BLUE}")
         elif command == COMMANDS["ADD_CONTACT"]:
             print(add_contact(address_book))
         elif command == COMMANDS["CHANGE_PHONE_OF_CONTACT"]:
-            print(change_contact(args, address_book))
+            print(f"{Fore.GREEN}{change_contact(args, address_book)}{Fore.GREEN}")
         elif command == COMMANDS["FIND_CONTACT_BY_NAME"]:
             print(find_contact_by_name(args, address_book))
         elif command == COMMANDS["FIND_CONTACT_BY_PHONE"]:
             print(find_contact_by_phone(args, address_book))
         elif command == COMMANDS["DELETE_PHONE"]:
             print(delete_phone(args, address_book))
+        elif command == COMMANDS["DELETE_CONTACT"]:
+            print(delete_contact(args, address_book))
         elif command == COMMANDS["SHOW_PHONE"]:
             print(show_phone(args, address_book))
         elif command == COMMANDS["ALL_CONTACTS"]:
@@ -83,7 +87,7 @@ def main():
         elif command == COMMANDS["SHOW_VERSION"]:
             print(get_app_version())
         else:
-            print(f"Unknown command. {suggest_command(command)}")
+            print(f"{Fore.YELLOW}Unknown command. {suggest_command(command)}{Fore.YELLOW}")
 
 
 # Start the main function

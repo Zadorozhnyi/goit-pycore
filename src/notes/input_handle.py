@@ -1,3 +1,4 @@
+from colorama import Fore
 from src.decorators.input_error import input_error
 from src.notes.classes.notebook import Notebook
 from src.notes.classes.note import Note
@@ -22,9 +23,9 @@ def add_note(notebook: Notebook):
             formated_tags = {*tags}
             note = Note(title, content, list(formated_tags))
         notebook.add_note(note)
-        return "Note added."
+        return f"{Fore.GREEN}Note added.{Fore.RESET}"
     else:
-        raise ValueError("Note with this title is already exist")
+        raise ValueError(f"{Fore.YELLOW}Note with this title is already exist{Fore.RESET}")
     
 
 # Function add tags to note to the dict notebook  
@@ -34,16 +35,16 @@ def add_tags_to_note(notebook: Notebook):
     tags = input("Please enter tags splited by space: ").strip().split()
 
     if tags == []:
-        return "No tags was printed"
+        return f"{Fore.YELLOW}No tags was printed{Fore.RESET}"
 
     note: Note = notebook.find_by_title(title)
 
     if note is not None:
         formated_tags = {*tags}
         note.add_tags(list(formated_tags))
-        return "Tags for note added."
+        return f"{Fore.GREEN}Tags for note added.{Fore.RESET}"
     else:
-        raise ValueError("Note with this title is not exist")
+        raise ValueError(f"{Fore.YELLOW}Note with this title is not exist{Fore.RESET}")
 
 
 # Function to find notes by tag
@@ -52,7 +53,7 @@ def find_note_by_tag(args: list[str], notebook: Notebook):
     try:
         tag, *_ = args
     except ValueError:
-        return "Please enter tag by which you want to find notes"
+        return f"{Fore.YELLOW}Please enter tag by which you want to find notes{Fore.RESET}"
     
     return notebook.find_by_tag(tag)
 
@@ -67,9 +68,9 @@ def edit_note(notebook: Notebook):
 
     if note is not None:
         note.update_content(content)
-        return "Note content updated."
+        return f"{Fore.GREEN}Note content updated.{Fore.RESET}"
     else:
-        raise ValueError("Note with this title is not exist")
+        raise ValueError(f"{Fore.YELLOW}Note with this title is not exist{Fore.RESET}")
 
 
 # Function for deleting notes
@@ -78,21 +79,21 @@ def delete_note(args: list[str], notebook: Notebook):
     try:
         title, *_ = args
     except ValueError:
-        return "Please enter title of note that you want to delete"
+        return f"{Fore.YELLOW}Please enter title of note that you want to delete{Fore.RESET}"
     
     note: Note = notebook.find_by_title(title)
 
     if note is not None:
         notebook.delete_note(title)
-        return "Note deleted."
+        return f"{Fore.GREEN}Note deleted.{Fore.RESET}"
     else:
-        raise ValueError("Note with this title is not exist")
+        raise ValueError(f"{Fore.YELLOW}Note with this title is not exist{Fore.RESET}")
 
 
 # Function takes dict of notes and return it, if no notes return 'No notes found'
 @input_error
 def show_all_notes(notebook: Notebook) -> str:
     if len(notebook) == 0:
-        return 'No notes found'
+        return f'{Fore.YELLOW}No notes found{Fore.RESET}'
     
     return notebook   

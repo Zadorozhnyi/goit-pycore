@@ -1,3 +1,4 @@
+from colorama import Fore
 from datetime import datetime
 from src.utils.classes.field import Field
 
@@ -11,7 +12,7 @@ class Birthday(Field):
         try:
             self.value = datetime.strptime(value, "%d.%m.%Y").date()
         except ValueError:
-            raise ValueError("Invalid date format. Use 'DD.MM.YYYY'.")
+            raise ValueError(f"{Fore.YELLOW}Invalid date format. Use 'DD.MM.YYYY'.{Fore.RESET}")
 
     def __str__(self):
         return self.value.strftime("%d.%m.%Y")
