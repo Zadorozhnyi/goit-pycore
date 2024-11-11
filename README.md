@@ -137,5 +137,10 @@ Before installing, ensure you have the following dependencies installed:
 * 1.2.0
     * Final Release
 
+## Known issues
+1. Attempting to change an unlinked contact number shows an incorrect "This contact does not exist" error.
+2. The same error appears in show-birthday for existing contacts without a recorded birthday.
+3. The delete-note command does not convert the note title to lowercase, causing deletion errors.
+
 ## License
 MIT, see the local ``license.txt`` file
