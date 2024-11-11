@@ -31,7 +31,10 @@ class Record:
     # Edit phone from the record by taking phone and new phone
     def edit_phone(self, old_phone_number: str, new_phone_number: str):
         # Check if phone exist
-        self.find_phone(old_phone_number)
+        try:
+            self.find_phone(old_phone_number)
+        except:
+            raise ValueError(f'{Fore.YELLOW}Phone is not in phones{Fore.RESET}')
 
         phone_index = [str(phone) for phone in self.phones].index(old_phone_number)
         del self.phones[phone_index]
