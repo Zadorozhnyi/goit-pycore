@@ -1,3 +1,5 @@
+from colorama import Fore
+
 # Class Note for support: tags, search, and editing
 class Note:
     def __init__(self, title: str, content: str, tags=[]):
@@ -16,4 +18,4 @@ class Note:
 
     def __str__(self):
         tags = "No tags for now" if self.tags == [] else ", ".join(self.tags)
-        return f'\nNote title: {self.title.capitalize()}\nContent: {self.content}\nTags: {tags}\n'
+        return f'\n{Fore.GREEN}Note title:{Fore.RESET} {self.title.capitalize()}\nContent: {self.content}\nTags: {tags}\n'

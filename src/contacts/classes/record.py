@@ -1,3 +1,4 @@
+from colorama import Fore
 from src.contacts.classes.fields.name import Name
 from src.contacts.classes.fields.phone import Phone
 from src.contacts.classes.fields.birthday import Birthday
@@ -16,14 +17,14 @@ class Record:
     # Add phone to the record by taking phone, if phone is already exist return
     def add_phone(self, phone_number: str):
         if str(Phone(phone_number)) in [str(phone) for phone in self.phones]:
-            raise ValueError('Phone is already exist.')
+            raise ValueError(f'{Fore.YELLOW}Phone is already exist.{Fore.RESET}')
         self.phones.append(Phone(phone_number))
         return self.phones
 
     # Remove phone from the record by taking phone, if phone not exist return
     def remove_phone(self, phone_number: str):
         if str(Phone(phone_number)) not in [str(phone) for phone in self.phones]:
-            raise ValueError('Phone is not in phones')
+            raise ValueError(f'{Fore.YELLOW}Phone is not in phones{Fore.RESET}')
         phone_index = [str(phone) for phone in self.phones].index(phone_number)
         del self.phones[phone_index]
 
@@ -56,4 +57,4 @@ class Record:
         birthday_str = f"\nbirthday: {self.birthday}" if self.birthday else ""
         address_str = f"\naddress: {self.address}" if self.address else ""
         email_str = f"\nemail: {self.email}" if self.email else ""
-        return f"\nContact name: {self.name.value}{phones_str}{address_str}{email_str}{birthday_str}\n"
+        return f"\n{Fore.GREEN}Contact name:{Fore.RESET} {self.name.value}{phones_str}{address_str}{email_str}{birthday_str}\n"

@@ -8,6 +8,7 @@ COMMANDS = {
     "FIND_CONTACT_BY_NAME": "contact-by-name",
     "FIND_CONTACT_BY_PHONE": "contact-by-phone",
     "DELETE_PHONE": "delete-phone",
+    "DELETE_CONTACT": "delete-contact",
     "SHOW_PHONE": "phone",
     "ALL_CONTACTS": "all-contacts",
     "ADD_BIRTHDAY": "add-birthday",
