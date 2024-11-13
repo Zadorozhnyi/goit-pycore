@@ -90,7 +90,6 @@ def change_contact(args, address_book: AddressBook):
     if record:
         record.edit_phone(phone, new_phone)
         return f"{Fore.GREEN}Contact '{name}' updated.{Fore.RESET}"
-    raise KeyError
 
 
 @input_error
@@ -162,7 +161,7 @@ def show_birthday(args, address_book: AddressBook):
     record: Record = address_book.find(name)
     if record and record.birthday:
         return f"Birthday for '{name}': {record.birthday}"
-    raise KeyError
+    raise ValueError(f'{Fore.YELLOW}Contact has not info about birthday{Fore.RESET}')
 
 
 @input_error
