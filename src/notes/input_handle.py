@@ -81,10 +81,10 @@ def delete_note(args: list[str], notebook: Notebook):
     except ValueError:
         return f"{Fore.YELLOW}Please enter title of note that you want to delete{Fore.RESET}"
     
-    note: Note = notebook.find_by_title(title)
+    note: Note = notebook.find_by_title(title.lower())
 
     if note is not None:
-        notebook.delete_note(title)
+        notebook.delete_note(title.lower())
         return f"{Fore.GREEN}Note deleted.{Fore.RESET}"
     else:
         raise ValueError(f"{Fore.YELLOW}Note with this title is not exist{Fore.RESET}")

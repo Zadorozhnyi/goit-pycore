@@ -64,7 +64,7 @@ def show_menu():
     description_notes = {
         COMMANDS["ADD_NOTE"]: {
             "arg": "",
-            "desc": "Add a new contact"
+            "desc": "Add a new note"
         },
         COMMANDS["ADD_TAGS"]: {
             "arg": "",
