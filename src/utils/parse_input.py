@@ -1,5 +1,5 @@
 from prompt_toolkit import PromptSession
-from src.utils.classes.command_ompleter import CommandCompleter
+from src.utils.classes.command_completer import CommandCompleter
 from src.decorators.input_error import input_error
 
 # CLI Functions
