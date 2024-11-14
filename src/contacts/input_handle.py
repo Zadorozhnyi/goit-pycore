@@ -90,6 +90,7 @@ def change_contact(args, address_book: AddressBook):
     if record:
         record.edit_phone(phone, new_phone)
         return f"{Fore.GREEN}Contact '{name}' updated.{Fore.RESET}"
+    raise KeyError
 
 
 @input_error
